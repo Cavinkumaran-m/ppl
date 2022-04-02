@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/splash"
     tools:context=".card_view_item"
     >
 
@@ -58,19 +58,21 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/yes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="YES" />
 
             <Button
+                android:id="@+id/not_sure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="NOT SURE" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"

@@ -72,16 +72,16 @@ public class complaints_around_you extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Datamodel user = dataSnapshot.getValue(Datamodel.class);
 
-                    lat2 = user.getLatitude_value() / 57.29577951;
-                    lon2 = user.getLongitude_value() / 57.29577951;
+                    //lat2 = user.getCom_lat() / 57.29577951;
+                    //lon2 = user.getCom_lon() / 57.29577951;
 
-                    dist = 3963.0 * Math.acos((Math.sin(lat) * Math.sin(lat2)) + Math.cos(lat) * Math.cos(lat2) * Math.cos(lon2 - lon));
-                    dist = dist * 1.609344;
-                    Log.d("dist", dist.toString());
+                    //dist = 3963.0 * Math.acos((Math.sin(lat) * Math.sin(lat2)) + Math.cos(lat) * Math.cos(lat2) * Math.cos(lon2 - lon));
+                    //dist = dist * 1.609344;
+                    //Log.d("dist", dist.toString());
 
-                    if(dist < 0.5) {
+                    //if(dist < 1) {
                         list.add(user);
-                    }
+                    //}
 
 
 
