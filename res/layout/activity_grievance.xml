@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:hint="Person Name."
+            android:hint="Person Name"
             app:endIconMode="clear_text"
             app:endIconTint="#000000"
             app:hintTextColor="#000000"
@@ -35,30 +35,14 @@
                 android:maxLines="1"
                 android:inputType="text"
                 android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/outlinebox4"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:hint="Address"
-            app:endIconMode="clear_text"
-            app:endIconTint="#000000"
-            app:hintTextColor="#000000"
-            app:startIconTint="#000000">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/address"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:inputType="text"
 
-                />
+
+
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/outlinebox5"
@@ -82,26 +66,30 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="280dp"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center_horizontal"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/select"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-            <AutoCompleteTextView
-                android:id="@+id/auto_complete_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:id="@+id/problem_faced"
+            android:text="Problem Faced"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center_horizontal"
+            />
+ //Dropdown Box
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_marginTop="30dp"
+            android:layout_width="280dp"
+            android:padding="30dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:spinnerMode="dropdown" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/complaintlocation"
-            android:text="Complaint Location"
+            android:text="Touch the Map"
             android:layout_marginTop="50dp"
             android:layout_gravity="center_horizontal"
             />
@@ -109,28 +97,20 @@
 
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
             android:layout_marginTop="10dp"
             android:layout_centerInParent="true">
 
             <fragment
                 android:id="@+id/gmap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="330dp"
-                android:layout_height="300dp"
-                android:layout_marginStart="37dp"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true" />
 
-            <ImageView
-                android:id="@+id/locator"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_location"
-                android:layout_marginStart="280dp"
-                android:layout_marginTop="240dp"
-                />
+
 
         </FrameLayout>
         <com.google.android.material.button.MaterialButton
@@ -159,8 +139,6 @@
             android:padding="10dp"
             android:text="File Complaint"
             app:cornerRadius="10dp" />
-
-
 
 
 

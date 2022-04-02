@@ -10,8 +10,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -19,17 +22,16 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.AdapterView;
+
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Spinner;
+
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -42,11 +44,18 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
+
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+
+import java.io.IOException;
+import java.nio.Buffer;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 public class grievance extends AppCompatActivity {
     GoogleMap gmap;
@@ -54,18 +63,24 @@ public class grievance extends AppCompatActivity {
     MaterialButton takepic,compalintbtn;
     TextInputLayout person_text,address_text,desc_text;
     FusedLocationProviderClient mFusedLocationClient;
+    Spinner spinnerLanguage ;
+    FirebaseAuthProvider firebaseAuthProvider;
+    Geocoder geocoder;
+
 
     int PERMISSION_ID = 44;
-    Double lon, lat;
+    int Id ,Count=0,Fake=0;
+
+    String status = "Just Initiated";
+    Double lon, lat, com_lon, com_lat;
     boolean map_trig = false;
+    boolean trigger = false;
     FirebaseDatabase  rootNode ;
     DatabaseReference reference;
     FirebaseStorage firebaseStorage;
     helperclass hc;
 
-    String[] items =  {"Material","Design","Components","Android","5.0 Lollipop"};
-    AutoCompleteTextView autoCompleteTxt;
-    ArrayAdapter<String> adapterItems;
+
 
 
     @Override
@@ -76,7 +91,7 @@ public class grievance extends AppCompatActivity {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
 
-        locator= (ImageView) findViewById(R.id.locator);
+
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.gmap);
         supportMapFragment.getMapAsync(this::onMapReady);
@@ -86,26 +101,47 @@ public class grievance extends AppCompatActivity {
         compalintbtn=(MaterialButton) findViewById(R.id.filecomplaint) ;
 
         person_text =(TextInputLayout) findViewById(R.id.outlinebox3);
-        address_text =(TextInputLayout)findViewById(R.id.outlinebox4);
         desc_text = (TextInputLayout)findViewById(R.id.outlinebox5);
-        autoCompleteTxt = findViewById(R.id.auto_complete_txt);
+        spinnerLanguage = (Spinner) findViewById(R.id.spinner);
 
 
 
+        geocoder = new Geocoder(this,Locale.getDefault());
 
         //longitude value and latitude value are already declared
 
         compalintbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            rootNode= FirebaseDatabase.getInstance();
-            reference= rootNode.getReference("Complaint");
-                String person=person_text.getEditText().getText().toString();
-                String address=address_text.getEditText().getText().toString();
-                String description=desc_text.getEditText().getText().toString();
 
-                helperclass hc =new helperclass(person,address,description,lat,lon);
-            reference.child(person).setValue(hc);
+                String person=person_text.getEditText().getText().toString();
+                String description=desc_text.getEditText().getText().toString();
+                String problem = spinnerLanguage.getSelectedItem().toString();
+                //String contact= .getSelectedItem().toString();
+
+                Random r = new Random();
+                Id = r.nextInt(100000);
+                List<Address> com_location;
+
+                com_location = null;
+                try {
+                    com_location = geocoder.getFromLocation(com_lat, com_lon, 1);
+                } catch (IOException e) {
+
+                }
+
+
+                String com_address= com_location.get(0).getAddressLine(0);
+                String com_city= com_location.get(0).getLocality();
+                String com_postal= com_location.get(0).getPostalCode();
+
+
+                SharedPreferences sh = getSharedPreferences("data", MODE_PRIVATE);
+                String phone_num = sh.getString("phone_num", "");
+                rootNode= FirebaseDatabase.getInstance();
+                reference= rootNode.getReference("Complaint");
+                helperclass hc =new helperclass(Id, phone_num,person, description,lat,lon,problem, status,Count,Fake, com_lat, com_lon, com_address, com_city, com_postal);
+                reference.child(String.valueOf(Id)).setValue(hc);
             } });
 
 
@@ -123,23 +159,13 @@ public class grievance extends AppCompatActivity {
                 startActivityForResult(intent,100);
             }
         });
-        locator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getLastLocation();
-            }
-        });
 
 
-        adapterItems = new ArrayAdapter<String>(this,R.layout.activity_grievance,items);
-        autoCompleteTxt.setAdapter(adapterItems);
+        ArrayAdapter<CharSequence>adapter=ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
 
-        autoCompleteTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-            }
-        });
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinnerLanguage.setAdapter(adapter);
+
 
     }
 
@@ -159,23 +185,24 @@ public class grievance extends AppCompatActivity {
 
     public void onMapReady(GoogleMap googleMap){
         gmap=googleMap ;
-        gmap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
             @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                if(map_trig == true) {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    LatLng user_coordinates = new LatLng(lat, lon);
-                    markerOptions.position(user_coordinates);
-                    markerOptions.title(user_coordinates.latitude + ":" + user_coordinates.longitude);
-                    gmap.clear();
-                    // Double latitude = latLng.latitude;
-                    // Double longitude = latLng.longitude;
+            public void onMapClick(LatLng point) {
 
-                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-                    gmap.addMarker(markerOptions);
+                googleMap.clear();
+                MarkerOptions marker = new MarkerOptions()
+                        .position(new LatLng(point.latitude, point.longitude))
+                        .title("Complaint Location");
+                //marker.
+                googleMap.addMarker(marker);
+                //Marker marker = gmap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).draggable(true));
+                trigger = true;
 
-                    // LatLng mylocation = new LatLng(latitude,longitude);
-                }
+                com_lat = point.latitude;
+                com_lon = point.longitude;
             }
         });
     }

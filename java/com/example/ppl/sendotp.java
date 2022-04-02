@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -20,6 +22,11 @@ public class sendotp extends AppCompatActivity {
 
      MaterialButton send_otp  ;
      TextInputEditText mobile_no;
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +39,8 @@ public class sendotp extends AppCompatActivity {
             public void onClick(View view) {
                 if(mobile_no.getText().toString().trim().isEmpty()){
                 Toast.makeText(sendotp.this, "ENTER MOBILE", Toast.LENGTH_SHORT).show();
-                return;}
+                return;
+                }
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(
                         "+91" +mobile_no.getText().toString(),
                         30,

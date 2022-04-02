@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         complaintaroundu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),complaints_around_you.class);
+                startActivity(intent);
 
             }
         });

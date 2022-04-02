@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -72,6 +73,11 @@ public class verifyotp extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
+                                        SharedPreferences sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+                                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                                        String phone_num = String.format("+91-%s", getIntent().getStringExtra("mobile"));
+                                        myEdit.putString("phone_num", phone_num);
+                                        myEdit.commit();
                                         Intent intent =new Intent(getApplicationContext(),MainActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
