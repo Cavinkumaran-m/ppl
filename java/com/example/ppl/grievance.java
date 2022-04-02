@@ -135,6 +135,15 @@ public class grievance extends AppCompatActivity {
                 String com_city= com_location.get(0).getLocality();
                 String com_postal= com_location.get(0).getPostalCode();
 
+                if(com_address == null) {
+                    com_address = " ";
+                }
+                if(com_city == null) {
+                    com_address = " ";
+                }
+                if(com_location == null) {
+                    com_address = " ";
+                }
 
                 SharedPreferences sh = getSharedPreferences("data", MODE_PRIVATE);
                 String phone_num = sh.getString("phone_num", "");
